@@ -1,0 +1,21 @@
+# ⚙️ Node.js
+node_modules/
+.env
+*.log
+*.sqlite
+data.db
+
+# ⚙️ macOS
+.DS_Store
+
+# ⚙️ VSCode
+.vscode/
+
+# ⚙️ Logs
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ⚙️ Env
+.env.*
