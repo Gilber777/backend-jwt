@@ -48,6 +48,16 @@ app.get("/", (req, res) => {
   res.send("Servidor funcionando correctamente con dotenv, cors y body-parser.");
 });
 
+
+/**************************************************
+ * 🧪 RUTA (TEMPORAL) PARA OBTENER IP DE RENDER
+ **************************************************/
+app.get("/mi-ip", (req, res) => {
+  const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+  res.send(`IP del cliente: ${ip}`);
+});
+
+
 /********************************************************
  * 🔒 RUTA PROTEGIDA (requiere token JWT en el header)
  ********************************************************/
