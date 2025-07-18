@@ -74,24 +74,24 @@ app.get("/perfil", verificarToken, (req, res) => {
 app.post("/usuarios-mongo", [
   body("nombre").notEmpty().withMessage("El nombre es obligatorio"),
   body("correo").isEmail().withMessage("Correo inválido"),
-  body("contraseña").isLength({ min: 8 }).withMessage("La contraseña debe tener al menos 8 caracteres")
+  body("password").isLength({ min: 8 }).withMessage("La password debe tener al menos 8 caracteres")
 ], async (req, res) => {
   const errores = validationResult(req);
   if (!errores.isEmpty()) return res.status(400).json({ errores: errores.array() });
 
   try {
-    const { nombre, correo, contraseña } = req.body;
+    const { nombre, correo, password } = req.body;
 
     // Verificamos si ya existe el correo
     const existeUsuario = await Usuario.findOne({ correo });
     if (existeUsuario) return res.status(400).json({ error: "El correo ya está registrado" });
 
-    // Encriptamos la contraseña
+    // Encriptamos la password
     const salt = await bcrypt.genSalt(10);
-    const contraseñaCifrada = await bcrypt.hash(contraseña, salt);
+    const passwordCifrada = await bcrypt.hash(password, salt);
 
     // Creamos y guardamos el nuevo usuario
-    const nuevoUsuario = new Usuario({ nombre, correo, contraseña: contraseñaCifrada });
+    const nuevoUsuario = new Usuario({ nombre, correo, password: passwordCifrada });
     const usuarioGuardado = await nuevoUsuario.save();
 
     res.status(201).json({
@@ -113,19 +113,19 @@ app.post("/usuarios-mongo", [
  ********************************************************/
 app.post("/login", [
   body("correo").isEmail().withMessage("Correo inválido"),
-  body("contraseña").notEmpty().withMessage("La contraseña es obligatoria")
+  body("password").notEmpty().withMessage("La password es obligatoria")
 ], async (req, res) => {
   const errores = validationResult(req);
   if (!errores.isEmpty()) return res.status(400).json({ errores: errores.array() });
 
   try {
-    const { correo, contraseña } = req.body;
+    const { correo, password } = req.body;
 
     const usuario = await Usuario.findOne({ correo });
     if (!usuario) return res.status(404).json({ error: "Usuario no encontrado" });
 
-    const coincide = await bcrypt.compare(contraseña, usuario.contraseña);
-    if (!coincide) return res.status(401).json({ error: "Contraseña incorrecta" });
+    const coincide = await bcrypt.compare(password, usuario.password);
+    if (!coincide) return res.status(401).json({ error: "password incorrecta" });
 
     // Generamos el token
     const token = jwt.sign(
