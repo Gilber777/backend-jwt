@@ -12,7 +12,7 @@ const usuarioSchema = new mongoose.Schema({
   },
   password: { 
     type: String, 
-    required: true
+    required: true,
   },
   creado_en: {
     type: Date,
